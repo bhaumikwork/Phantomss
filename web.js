@@ -22,21 +22,16 @@ var s3bucket = new AWS.S3({
 
 var app = express();
 
-app.use(bodyParser.urlencoded({'extended':true}));
+app.use(bodyParser.json());
 
 app.get('/', function(req, res){
   res.send('<html><head><title>Screenshots!</title></head><body><h1>Screenshots!</h1><form action="/screenshot" method="POST">URL: <input name="address" value="" placeholder="http://"><br>Size:<input name="size" value="" placeholder="1024px or 1024px*1000px"><br>Zoom factor:<input name="zoom" value="1"><br><input type="hidden" name="redirect" value="true"><input type="submit" value="Get Screenshot!"></form></body></html>');
 });
 
 app.post('/screenshot', function(request, response) {
-  if(process.env.PASSCODE){
-    if(!request.body.passcode || request.body.passcode != process.env.PASSCODE){
-      return response.json(401, { 'unauthorized': ' _|_ ' });
-    }
-  }
-
+  console.log("request arrived with "+request.body.address);
   if(!request.body.address) {
-    return response.json(400, { 'error': 'You need to provide the website address.' });
+    return response.status(400).json({ 'error': 'You need to provide the website address.' });
   }
 
   var filename = guid.raw() + '.png';
@@ -90,7 +85,7 @@ app.post('/screenshot', function(request, response) {
 });
 
 
-var port = process.env.PORT || 5000;
+var port = 4000; //process.env.PORT || 5000;
 app.listen(port, function() {
   console.log("Listening on " + port);
 });
