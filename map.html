@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DispatchApp</title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  
+</head>
+<body>
+	<div class="container">
+		<p class="notice"></p>
+		<p class="alert"></p>
+		<script src="https://maps.googleapis.com/maps/api/js">
+    </script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.2.min.js"></script>
+<center>
+  <div class="row">
+    <div class="col-xs-12 box">
+      <div id="map" style="width: 460px; height: 500px"></div> 
+    </div>
+  </div>
+</center>
+<style type="text/css">
+  #map {
+        pointer-events:none;
+      }
+</style>
+<script type="text/javascript">
+
+  $(document).ready(function($) {
+    initMap();
+  });
+  var map;
+  var intl;
+  // if we doesn't found current_location then doesn't call map.
+  function initMap() {
+      initMapContinue();
+  }
+  // this will load map
+  function initMapContinue(){
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 16,
+      zoomControl: false,
+      mapTypeControl: false,
+      scaleControl: false,
+      streetViewControl: false,
+      rotateControl: false,
+      fullscreenControl: false,
+      scrollwheel: false,
+      navigationControl: false,
+      mapTypeControl: false,
+      draggable: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+    directionsDisplay.setMap(null);
+    directionsDisplay.setMap(map);
+    directionsService.route({
+      origin: '###START###',
+      destination: '###END###',
+      travelMode: google.maps.TravelMode.DRIVING
+    }, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
+  } 
+  
+</script>
+	</div>
+</body>
+</html>

@@ -1,4 +1,5 @@
 {
+	"host": "https://phantomss.herokuapp.com/",
 	"region": "us-west-2",
 	"bucket": "dispatcher.tps",
 	"accessKey":"AKIAIJVDRVZLYK4WNREA",
