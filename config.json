@@ -2,7 +2,7 @@
 	"host": "https://phantomss.herokuapp.com/",
 	"region": "us-west-2",
 	"bucket": "dispatcher.tps",
-	"accessKey":"AKIAIJVDRVZLYK4WNRE",
+	"accessKey":"AKIAIJVDRVZLYK4WNREA",
 	"secret": "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",
 	"size":"460px",
 	"zoom": 1
