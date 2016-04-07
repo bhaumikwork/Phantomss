@@ -33,6 +33,7 @@ app.get('/', function(req, res){
 });
 
 app.post('/screenshot', function(request, response) {
+  console.log("taking ss");
   var address = _ServerConfig.host + "?start=" + request.body.start + "&end=" + request.body.end;
   var filename = guid.raw() + '.png';
   var filenameFull = './images/' + filename;
@@ -45,10 +46,10 @@ app.post('/screenshot', function(request, response) {
   ];
 
   //grap the screen
-  setTimeout(function(){
-    childProcess.execFile('phantomjs', childArgs, function(error, stdout, stderr){
+  childProcess.execFile('phantomjs', childArgs, function(error, stdout, stderr){
       console.log("Grabbing screen for: " + address);
       resHash['1'] = "Grabbing screen for: " + address;
+    setTimeout(function(){
       if(error !== null) {
         resHash['2'] = "Error capturing page: " + error.message + "\n for address: " + childArgs[1];
         console.log("Error capturing page: " + error.message + "\n for address: " + childArgs[1]);
@@ -89,8 +90,8 @@ app.post('/screenshot', function(request, response) {
           }
         });
       }
-    });
-  },2000);
+    },2000);
+  });
 });
 
 
