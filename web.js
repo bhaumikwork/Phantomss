@@ -45,50 +45,52 @@ app.post('/screenshot', function(request, response) {
   ];
 
   //grap the screen
-  childProcess.execFile('phantomjs', childArgs, function(error, stdout, stderr){
-    console.log("Grabbing screen for: " + address);
-    resHash['1'] = "Grabbing screen for: " + address;
-    if(error !== null) {
-      resHash['2'] = "Error capturing page: " + error.message + "\n for address: " + childArgs[1];
-      console.log("Error capturing page: " + error.message + "\n for address: " + childArgs[1]);
-      return response.status(500).json(resHash);
-    } else {
-      resHash['2'] = "Screen grabbed and load the saved file";
-      console.log(stdout,stderr);
-      //load the saved file
-      fs.readFile(filenameFull, function(err, temp_png_data){
-        if(err!=null){
-          resHash['3'] = "Error loading saved screenshot: " + err.message;
-          console.log("Error loading saved screenshot: " + err.message);
-          return response.status(500).json(resHash);
-        }else{
-          resHash['3'] = "Uploading image on s3.";
-          upload_params = {
-            Body: temp_png_data,
-            Key: guid.raw() + ".png",
-            Bucket: _ServerConfig.bucket,
-            ACL: "public-read"
-          };
-          
-          s3bucket.upload(upload_params, function(err, data) {
-            if (err) {
-              resHash['4'] = "Error uploading data: "+ err.message;
-              console.log("Error uploading data: ", err);
-            } else {
-              resHash['4'] = "Image uploaded,deleting from local and returning image-url";
-              fs.unlink(filenameFull, function(err){}); //delete local file
-              var s3Region = _ServerConfig.region ? 's3-' + _ServerConfig.region : 's3'
-              var s3Url = 'https://s3.amazonaws.com/' + _ServerConfig.bucket +
-              '/' + upload_params.Key;
-              resHash['url'] = s3Url;
-              return response.json(resHash);
-            }
-          });
-          
-        }
-      });
-    }
-  });
+  setTimeout(function(){
+    childProcess.execFile('phantomjs', childArgs, function(error, stdout, stderr){
+      console.log("Grabbing screen for: " + address);
+      resHash['1'] = "Grabbing screen for: " + address;
+      if(error !== null) {
+        resHash['2'] = "Error capturing page: " + error.message + "\n for address: " + childArgs[1];
+        console.log("Error capturing page: " + error.message + "\n for address: " + childArgs[1]);
+        return response.status(500).json(resHash);
+      } else {
+        resHash['2'] = "Screen grabbed and load the saved file";
+        console.log(stdout,stderr);
+        //load the saved file
+        fs.readFile(filenameFull, function(err, temp_png_data){
+          if(err!=null){
+            resHash['3'] = "Error loading saved screenshot: " + err.message;
+            console.log("Error loading saved screenshot: " + err.message);
+            return response.status(500).json(resHash);
+          }else{
+            resHash['3'] = "Uploading image on s3.";
+            upload_params = {
+              Body: temp_png_data,
+              Key: guid.raw() + ".png",
+              Bucket: _ServerConfig.bucket,
+              ACL: "public-read"
+            };
+            
+            s3bucket.upload(upload_params, function(err, data) {
+              if (err) {
+                resHash['4'] = "Error uploading data: "+ err.message;
+                console.log("Error uploading data: ", err);
+              } else {
+                resHash['4'] = "Image uploaded,deleting from local and returning image-url";
+                fs.unlink(filenameFull, function(err){}); //delete local file
+                var s3Region = _ServerConfig.region ? 's3-' + _ServerConfig.region : 's3'
+                var s3Url = 'https://s3.amazonaws.com/' + _ServerConfig.bucket +
+                '/' + upload_params.Key;
+                resHash['url'] = s3Url;
+                return response.json(resHash);
+              }
+            });
+            
+          }
+        });
+      }
+    });
+  },2000);
 });
 
 
