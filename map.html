@@ -51,6 +51,12 @@
         window.alert('Directions request failed due to ' + status);
       }
     });
+    
+    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+      if (typeof window.callPhantom === 'function') {
+        window.callPhantom();
+      }
+    });
   } 
   
 </script>

@@ -35,23 +35,10 @@ if (system.args.length < 3 || system.args.length > 5) {
         page.zoomFactor = system.args[4];
     }
 
-    var renderAndExit = function(){
-        page.render(output);
-        phantom.exit();
-    }
+    page.onCallback = function(data) {
+      page.render(output);
+      phantom.exit();
+    };
 
-    page.open(address, function (status) {
-        if (status !== 'success') {
-            console.log('Unable to load the address!');
-            phantom.exit();
-        } else {
-            if(window.document.readyState == "complete"){
-                renderAndExit()
-            } else {
-                window.addEventListener ?
-                window.addEventListener("load", renderAndExit, false) :
-                window.attachEvent && window.attachEvent("onload", renderAndExit);
-            }
-        }
-    });
+    page.open(address);
 }
